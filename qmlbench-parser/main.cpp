@@ -220,7 +220,7 @@ int main(int argc, char **argv)
                                 << QStringLiteral("-f")
                                 << senderEmail
                                 << QStringLiteral("-u")
-                                << QStringLiteral("[Lancelot QmlBench] Discrepancies in benchmarks")
+                                << QStringLiteral("[Lancelot QmlBench] Discrepancies in benchmarks (%1)").arg(QFileInfo(directory).baseName())
                                 << QStringLiteral("-t")
                                 << email
                                 << QStringLiteral("-m")
