@@ -172,7 +172,7 @@ int main(int argc, char **argv)
     for (it = benchmarkDatas.constBegin(); it != benchmarkDatas.constEnd(); ++it) {
         const BenchmarkDataPair &dataPair = it.value();
         if (dataPair.first.time.isValid() && dataPair.second.time.isValid()) {
-            qreal difference = qAbs((dataPair.second.average - dataPair.first.average) / dataPair.first.average);
+            qreal difference = (dataPair.second.average - dataPair.first.average) / dataPair.first.average;
             if (qAbs(difference) >= errorMargin) {
                 if (difference > 0.0)
                     testResultsFormatted += QStringLiteral("\n\n____IMPROVEMENT DETECTED____\n");
