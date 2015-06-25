@@ -111,12 +111,12 @@ int main(int argc, char **argv)
 
     QString smtpServer = QStringLiteral("localhost");
     QString senderEmail = QStringLiteral("nobody@nowhere");
-    qreal errorMargin = 0.03;
+    qreal errorMargin = 0.01;
     QString directory;
     QString email;
 
-    bool helpRequested = argc < 3;
-    for (int i = 0; i < arguments.size() && !helpRequested; ++i) {
+    bool helpRequested = false;
+    for (int i = 1; i < arguments.size() && !helpRequested; ++i) {
         QString argument = arguments.at(i);
         if (argument == QStringLiteral("-s")) {
             if (++i < arguments.size()) {
