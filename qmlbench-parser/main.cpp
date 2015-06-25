@@ -230,6 +230,8 @@ int main(int argc, char **argv)
             fprintf(stderr, "sendemail failed\n");
             return 2;
         }
+
+        return 3;
     } else {
         fprintf(stdout, "Nothing to report\n");
     }
