@@ -116,7 +116,7 @@ int main(int argc, char **argv)
     QString email;
 
     bool helpRequested = argc < 3;
-    for (int i = 3; i < arguments.size() && !helpRequested; ++i) {
+    for (int i = 0; i < arguments.size() && !helpRequested; ++i) {
         QString argument = arguments.at(i);
         if (argument == QStringLiteral("-s")) {
             if (++i < arguments.size()) {
@@ -140,12 +140,15 @@ int main(int argc, char **argv)
             helpRequested = true;
         } else if (directory.isEmpty()) {
             directory = argument.at(i);
-        } else if (senderEmail.isEmpty()) {
+        } else if (email.isEmpty()) {
             email = argument.at(i);
         } else {
             helpRequested = true;
         }
     }
+
+    if (directory.isEmpty() || email.isEmpty())
+        helpRequested = true;
 
     if (helpRequested) {
         // 01234567890123456789012345678901234567890123456789012345678901234567890123456789
