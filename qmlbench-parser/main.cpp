@@ -40,7 +40,7 @@ void collectData(const QString &fileName, QHash<QString, BenchmarkDataPair> *ben
     QString id = root.value(QStringLiteral("id")).toString();
     QStringList commits = id.split(QLatin1Char(','));
     if (commits.size() != 2) {
-        fprintf(stderr, "Warning: Misformed id in json file: %s\n", qPrintable(id));
+        fprintf(stderr, "Warning: Misformed id in json file %s: %s\n", qPrintable(fileName), qPrintable(id));
     } else {
         baseCommit = commits.at(0);
         declarativeCommit = commits.at(1);
