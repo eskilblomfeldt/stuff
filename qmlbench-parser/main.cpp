@@ -95,7 +95,7 @@ void collectData(const QFileInfo &fileInfo, QHash<QString, BenchmarkDataPair> *b
 
 QHash<QString, BenchmarkDataPair> collectData(const QString &directory)
 {
-    QList<QFileInfo> entries = QDir(directory).entryInfoList(QDir::Files, QDir::Time | QDir::Reversed);
+    QList<QFileInfo> entries = QDir(directory).entryInfoList(QDir::Files, QDir::Time);
     QHash<QString, BenchmarkDataPair> ret;
     foreach (QFileInfo entry, entries)
         collectData(entry, &ret);
