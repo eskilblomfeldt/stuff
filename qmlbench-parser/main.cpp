@@ -10,6 +10,8 @@ struct BenchmarkData
     QStringList results;
     QDateTime time;
 
+    QString baseCommit;
+    QString declarativeCommit;
     QString renderer;
     QString vendor;
     QString driverVersion;
@@ -32,6 +34,17 @@ void collectData(const QString &fileName, QHash<QString, BenchmarkDataPair> *ben
 
     QJsonDocument document = QJsonDocument::fromJson(file.readAll());
     QJsonObject root = document.object();
+
+    QString baseCommit;
+    QString declarativeCommit;
+    QString id = root.value(QStringLiteral("id")).toString();
+    QStringList commits = id.split(QLatin1Char(','));
+    if (commits.size() != 2) {
+        fprintf(stderr, "Warning: Misformed id in json file: %s\n", qPrintable(id));
+    } else {
+        baseCommit = commits.at(0);
+        declarativeCommit = commits.at(1);
+    }
 
     QString windowSize = root.value(QStringLiteral("windowSize")).toString();
     QString renderer;
@@ -66,6 +79,8 @@ void collectData(const QString &fileName, QHash<QString, BenchmarkDataPair> *ben
                 data.driverVersion = driverVersion;
                 data.platformPlugin = platformPlugin;
                 data.productName = productName;
+                data.baseCommit = baseCommit;
+                data.declarativeCommit = declarativeCommit;
 
                 QJsonObject o = it.value().toObject();
                 data.average = o.value(QStringLiteral("average")).toDouble();
@@ -162,8 +177,10 @@ int main(int argc, char **argv)
                     testResultsFormatted += QStringLiteral("\n\n____REGRESSION DETECTED_____\n");
 
                 testResultsFormatted += QStringLiteral("    Name: %1").arg(it.key());
-                testResultsFormatted += QStringLiteral("        Previous data point: %1\n").arg(dataPair.first.time.toString(Qt::ISODate));
-                testResultsFormatted += QStringLiteral("        Current data point: %1\n").arg(dataPair.second.time.toString(Qt::ISODate));
+                testResultsFormatted += QStringLiteral("        Previous data point: qtbase=%1, qtdeclarative=%2 (%3)\n")
+                        .arg(dataPair.first.baseCommit).arg(dataPair.first.declarativeCommit).arg(dataPair.first.time.toString(Qt::ISODate));
+                testResultsFormatted += QStringLiteral("        Current data point : qtbase=%1, qtdeclarative=%2 (%3)\n")
+                        .arg(dataPair.second.baseCommit).arg(dataPair.second.declarativeCommit).arg(dataPair.second.time.toString(Qt::ISODate));
                 testResultsFormatted += QStringLiteral("        Average: %1 (was: %2, change: %3%)\n").arg(dataPair.second.average).arg(dataPair.first.average).arg(difference * 100.0);
                 testResultsFormatted += QStringLiteral("        Results: %1 (was: %2)\n").arg(dataPair.second.results.join(QLatin1Char(','))).arg(dataPair.first.results.join(QLatin1Char(',')));
                 testResultsFormatted += QStringLiteral("        Window size: %1 %2\n")
@@ -190,7 +207,7 @@ int main(int argc, char **argv)
 
     if (!testResultsFormatted.isEmpty()) {
         fprintf(stdout, "Reporting to %s\n", qPrintable(email));
-        testResultsFormatted = QStringLiteral("Discrepancies detected when running benchmarks today") + testResultsFormatted + QStringLiteral("\n\nHave a nice day!");
+        testResultsFormatted = QStringLiteral("Discrepancies detected when running benchmarks today in %1").arg(QFileInfo(directory).baseName()) + testResultsFormatted + QStringLiteral("\n\nHave a nice day!");
 
         QProcess process;
         process.setProgram(QStringLiteral("sendemail"));
