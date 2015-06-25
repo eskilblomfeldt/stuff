@@ -71,7 +71,7 @@ void collectData(const QFileInfo &fileInfo, QHash<QString, BenchmarkDataPair> *b
         if (key != QStringLiteral("os") && key != QStringLiteral("opengl") && key != QStringLiteral("windowSize") && QFileInfo(key).exists()) {
             BenchmarkDataPair &dataPair = (*benchmarkDatas)[key];
             if (!dataPair.first.time.isValid() || !dataPair.second.time.isValid()) {
-                BenchmarkData &data = dataPair.first.time.isValid() ? dataPair.second : dataPair.first;
+                BenchmarkData &data = dataPair.second.time.isValid() ? dataPair.first : dataPair.second;
                 data.time = QFileInfo(file).lastModified();
                 data.windowSize = windowSize;
                 data.renderer = renderer;
