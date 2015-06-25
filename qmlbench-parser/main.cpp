@@ -174,7 +174,7 @@ int main(int argc, char **argv)
         if (dataPair.first.time.isValid() && dataPair.second.time.isValid()) {
             qreal difference = qAbs((dataPair.second.average - dataPair.first.average) / dataPair.first.average);
             if (qAbs(difference) >= errorMargin) {
-                if (difference < 0.0)
+                if (difference > 0.0)
                     testResultsFormatted += QStringLiteral("\n\n____IMPROVEMENT DETECTED____\n");
                 else
                     testResultsFormatted += QStringLiteral("\n\n____REGRESSION DETECTED_____\n");
