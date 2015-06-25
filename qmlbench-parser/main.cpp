@@ -24,11 +24,11 @@ struct BenchmarkData
 
 typedef QPair<BenchmarkData, BenchmarkData> BenchmarkDataPair;
 
-void collectData(const QString &fileName, QHash<QString, BenchmarkDataPair> *benchmarkDatas)
-{
-    QFile file(fileName);
+void collectData(const QFileInfo &fileInfo, QHash<QString, BenchmarkDataPair> *benchmarkDatas)
+{    
+    QFile file(fileInfo.absoluteFilePath());
     if (!file.open(QIODevice::ReadOnly)) {
-        fprintf(stderr, "Cannot open file for reading: %s\n", qPrintable(fileName));
+        fprintf(stderr, "Cannot open file for reading: %s\n", qPrintable(fileInfo.absoluteFilePath()));
         return;
     }
 
@@ -40,7 +40,7 @@ void collectData(const QString &fileName, QHash<QString, BenchmarkDataPair> *ben
     QString id = root.value(QStringLiteral("id")).toString();
     QStringList commits = id.split(QLatin1Char(','));
     if (commits.size() != 2) {
-        fprintf(stderr, "Warning: Misformed id in json file %s: %s\n", qPrintable(fileName), qPrintable(id));
+        fprintf(stderr, "Warning: Misformed id in json file %s: %s\n", qPrintable(fileInfo.absoluteFilePath()), qPrintable(id));
     } else {
         baseCommit = commits.at(0);
         declarativeCommit = commits.at(1);
@@ -95,9 +95,9 @@ void collectData(const QString &fileName, QHash<QString, BenchmarkDataPair> *ben
 
 QHash<QString, BenchmarkDataPair> collectData(const QString &directory)
 {
-    QStringList entries = QDir(directory).entryList(QDir::Files, QDir::Time | QDir::Reversed);
+    QList<QFileInfo> entries = QDir(directory).entryInfoList(QDir::Files, QDir::Time | QDir::Reversed);
     QHash<QString, BenchmarkDataPair> ret;
-    foreach (QString entry, entries)
+    foreach (QFileInfo entry, entries)
         collectData(entry, &ret);
 
     return ret;
