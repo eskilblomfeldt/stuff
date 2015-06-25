@@ -87,7 +87,7 @@ void collectData(const QFileInfo &fileInfo, QHash<QString, BenchmarkDataPair> *b
 
                 QJsonArray array = o.value(QStringLiteral("results")).toArray();
                 for (int j = 0; j < array.size(); ++j)
-                    data.results.append(array.at(j).toString());
+                    data.results.append(QString::number(array.at(j).toDouble()));
             }
         }
     }
