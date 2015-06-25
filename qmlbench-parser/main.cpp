@@ -139,9 +139,9 @@ int main(int argc, char **argv)
         } else if (argument == QStringLiteral("-h")) {
             helpRequested = true;
         } else if (directory.isEmpty()) {
-            directory = argument.at(i);
+            directory = argument;
         } else if (email.isEmpty()) {
-            email = argument.at(i);
+            email = argument;
         } else {
             helpRequested = true;
         }
