@@ -179,7 +179,7 @@ int main(int argc, char **argv)
                 else
                     testResultsFormatted += QStringLiteral("\n\n____REGRESSION DETECTED_____\n");
 
-                testResultsFormatted += QStringLiteral("    Name: %1").arg(it.key());
+                testResultsFormatted += QStringLiteral("    Name: %1\n").arg(it.key());
                 testResultsFormatted += QStringLiteral("        Previous data point: qtbase=%1, qtdeclarative=%2 (%3)\n")
                         .arg(dataPair.first.baseCommit).arg(dataPair.first.declarativeCommit).arg(dataPair.first.time.toString(Qt::ISODate));
                 testResultsFormatted += QStringLiteral("        Current data point : qtbase=%1, qtdeclarative=%2 (%3)\n")
