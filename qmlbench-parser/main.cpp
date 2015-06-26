@@ -4,8 +4,10 @@ struct BenchmarkData
 {
     BenchmarkData()
         : average(0.0)
+        , definitive(false)
     {}
 
+    QString fileName;
     qreal average;
     QStringList results;
     QDateTime time;
@@ -20,6 +22,8 @@ struct BenchmarkData
     QString productName;
 
     QString windowSize;
+
+    bool definitive;
 };
 
 typedef QPair<BenchmarkData, BenchmarkData> BenchmarkDataPair;
@@ -70,8 +74,8 @@ void collectData(const QFileInfo &fileInfo, QHash<QString, BenchmarkDataPair> *b
         QString key = it.key();
         if (key != QStringLiteral("os") && key != QStringLiteral("opengl") && key != QStringLiteral("windowSize") && QFileInfo(key).exists()) {
             BenchmarkDataPair &dataPair = (*benchmarkDatas)[key];
-            if (!dataPair.first.time.isValid() || !dataPair.second.time.isValid()) {
-                BenchmarkData &data = dataPair.second.time.isValid() ? dataPair.first : dataPair.second;
+            if (!dataPair.first.definitive || !dataPair.second.definitive) {
+                BenchmarkData &data = dataPair.second.definitive ? dataPair.first : dataPair.second;
                 data.time = QFileInfo(file).lastModified();
                 data.windowSize = windowSize;
                 data.renderer = renderer;
@@ -81,6 +85,7 @@ void collectData(const QFileInfo &fileInfo, QHash<QString, BenchmarkDataPair> *b
                 data.productName = productName;
                 data.baseCommit = baseCommit;
                 data.declarativeCommit = declarativeCommit;
+                data.fileName = fileInfo.absoluteFilePath();
 
                 QJsonObject o = it.value().toObject();
                 data.average = o.value(QStringLiteral("average")).toDouble();
@@ -88,6 +93,10 @@ void collectData(const QFileInfo &fileInfo, QHash<QString, BenchmarkDataPair> *b
                 QJsonArray array = o.value(QStringLiteral("results")).toArray();
                 for (int j = 0; j < array.size(); ++j)
                     data.results.append(QString::number(array.at(j).toDouble()));
+
+                // The newest data point should never be overwritten. For the comparison data point
+                // we search back until the last time a regression was reported.
+                data.definitive = QFileInfo(data.fileName + QStringLiteral(".reported")).exists() || !dataPair.second.definitive;
             }
         }
     }
@@ -204,6 +213,10 @@ int main(int argc, char **argv)
                 testResultsFormatted += QStringLiteral("        OS: %1 %2\n")
                         .arg(dataPair.second.productName)
                         .arg(dataPair.second.productName != dataPair.first.productName ? QStringLiteral("(was: %1").arg(dataPair.first.productName) : QString());
+
+                // Create a file to indicate that we have reported a mismatch for this version.
+                QFile file(dataPair.second.fileName + QStringLiteral(".reported"));
+                file.open(QIODevice::WriteOnly);
             }
         }
     }
