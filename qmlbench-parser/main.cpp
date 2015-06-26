@@ -120,7 +120,7 @@ int main(int argc, char **argv)
 
     QString smtpServer = QStringLiteral("localhost");
     QString senderEmail = QStringLiteral("nobody@nowhere");
-    qreal errorMargin = 0.01;
+    qreal errorMargin = 0.03;
     QString directory;
     QString email;
 
