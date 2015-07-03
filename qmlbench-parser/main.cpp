@@ -48,8 +48,8 @@ void collectData(const QFileInfo &fileInfo, QHash<QString, BenchmarkDataPair> *b
     if (commits.size() != 2) {
         fprintf(stderr, "Warning: Misformed id in json file %s: %s\n", qPrintable(fileInfo.absoluteFilePath()), qPrintable(id));
     } else {
-        baseCommit = commits.at(0);
-        declarativeCommit = commits.at(1);
+        baseCommit = commits.at(0).trimmed();
+        declarativeCommit = commits.at(1).trimmed();
     }
 
     QString windowSize = root.value(QStringLiteral("windowSize")).toString();
