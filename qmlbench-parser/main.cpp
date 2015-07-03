@@ -1,5 +1,7 @@
 #include <QtCore>
 
+qreal errorMargin = 0.03;
+
 struct BenchmarkData
 {
     BenchmarkData()
@@ -95,8 +97,13 @@ void collectData(const QFileInfo &fileInfo, QHash<QString, BenchmarkDataPair> *b
                     data.results.append(QString::number(array.at(j).toDouble()));
 
                 // The newest data point should never be overwritten. For the comparison data point
-                // we search back until the last time a regression was reported.
-                data.definitive = QFileInfo(data.fileName + QStringLiteral(".reported")).exists() || !dataPair.second.definitive;
+                // we search back until the last time a regression was reported or the first change which
+                // introduces a significant regression.
+                data.definitive =
+                        QFileInfo(data.fileName + QStringLiteral(".reported")).exists()
+                        || !dataPair.second.definitive
+                        || (dataPair.second.definitive
+                            && qAbs((dataPair.second.average - data.average) / data.average) >= errorMargin);
             }
         }
     }
@@ -120,7 +127,6 @@ int main(int argc, char **argv)
 
     QString smtpServer = QStringLiteral("localhost");
     QString senderEmail = QStringLiteral("nobody@nowhere");
-    qreal errorMargin = 0.03;
     QString directory;
     QString email;
 
