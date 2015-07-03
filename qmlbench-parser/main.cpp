@@ -75,6 +75,7 @@ void collectData(const QFileInfo &fileInfo, QHash<QString, BenchmarkDataPair> *b
     for (it = root.constBegin(); it != root.constEnd(); ++it) {
         QString key = it.key();
         if (key != QStringLiteral("os") && key != QStringLiteral("opengl") && key != QStringLiteral("windowSize") && QFileInfo(key).exists()) {
+            key = QFileInfo(key).absoluteFilePath();
             BenchmarkDataPair &dataPair = (*benchmarkDatas)[key];
             if (!dataPair.first.definitive || !dataPair.second.definitive) {
                 BenchmarkData &data = dataPair.second.definitive ? dataPair.first : dataPair.second;
