@@ -201,9 +201,9 @@ int main(int argc, char **argv)
                         .arg(dataPair.first.baseCommit).arg(dataPair.first.declarativeCommit).arg(dataPair.first.time.toString(Qt::ISODate));
                 testResultsFormatted += QStringLiteral("        Current data point : qtbase=%1, qtdeclarative=%2 (%3)\n")
                         .arg(dataPair.second.baseCommit).arg(dataPair.second.declarativeCommit).arg(dataPair.second.time.toString(Qt::ISODate));
-                testResultsFormatted += QStringLiteral("https://github.com/qtproject/qtbase/compare/%1...%2")
+                testResultsFormatted += QStringLiteral("https://github.com/qtproject/qtbase/compare/%1...%2\n")
                         .arg(dataPair.first.baseCommit).arg(dataPair.second.baseCommit);
-                testResultsFormatted += QStringLiteral("https://github.com/qtproject/qtdeclarative/compare/%1...%2")
+                testResultsFormatted += QStringLiteral("https://github.com/qtproject/qtdeclarative/compare/%1...%2\n")
                         .arg(dataPair.first.declarativeCommit).arg(dataPair.second.declarativeCommit);
                 testResultsFormatted += QStringLiteral("        Average: %1 (was: %2, change: %3%)\n").arg(dataPair.second.average).arg(dataPair.first.average).arg(difference * 100.0);
                 testResultsFormatted += QStringLiteral("        Results: %1 (was: %2)\n").arg(dataPair.second.results.join(QLatin1Char(','))).arg(dataPair.first.results.join(QLatin1Char(',')));
